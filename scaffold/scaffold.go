@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	GoScaffoldPath = "src/github.com/catchplay/scaffold"
+	GoScaffoldPath = "src/scaffold"
 )
 
 func init() {
@@ -78,7 +78,7 @@ type templateSet struct {
 
 func getTemplateSets() []templateSet {
 	tt := templateEngine{}
-	templatesFolder := filepath.Join(Gopath, GoScaffoldPath, "template/")
+	templatesFolder := filepath.Join(Gopath, GoScaffoldPath, "templates/c9/")
 	//fmt.Printf("walk:%s\n", templatesFolder)
 	filepath.Walk(templatesFolder, tt.visit)
 	return tt.Templates
@@ -134,7 +134,7 @@ func (templEngine *templateEngine) visit(path string, f os.FileInfo, err error) 
 		templateFileName := filepath.Base(path)
 
 		genFileBaeName := strings.TrimSuffix(templateFileName, ".tmpl") + ".go"
-		genFileBasePath, err := filepath.Rel(filepath.Join(Gopath, GoScaffoldPath, "template"), filepath.Join(filepath.Dir(path), genFileBaeName))
+		genFileBasePath, err := filepath.Rel(filepath.Join(Gopath, GoScaffoldPath, "templates", "c9"), filepath.Join(filepath.Dir(path), genFileBaeName))
 		if err != nil {
 			return pkgErr.WithStack(err)
 		}
@@ -171,7 +171,7 @@ func (templEngine *templateEngine) visit(path string, f os.FileInfo, err error) 
 
 func (s *scaffold) genFormStaticFle(d data) error {
 	walkerFuc := func(path string, f os.FileInfo, err error) error {
-		if f.Mode().IsRegular() == true {
+		if f.Mode().IsRegular() {
 			src, err := os.Open(path)
 			if err != nil {
 				return pkgErr.WithStack(err)
@@ -211,7 +211,7 @@ func (s *scaffold) genFormStaticFle(d data) error {
 }
 
 func (s *scaffold) debugPrintf(format string, a ...interface{}) {
-	if s.debug == true {
+	if s.debug {
 		fmt.Printf(format, a...)
 	}
 }

@@ -1,6 +1,6 @@
-# {{.ProjectName}} Service
+# test1933043295 Service
 
-This is the {{.ProjectName}} module service.
+This is the test1933043295 module service.
 
 This service is responsible for ...
 
@@ -12,4 +12,4 @@ This service uses ... <br />
 
 | Name | Description |
 |---|---|
-|{{.ProjectName}}Endpoint|Sample endpoint|
+|test1933043295Endpoint|Sample endpoint|

@@ -12,8 +12,9 @@ import (
 
 func TestScaffold(t *testing.T) {
 
-	tempDir, err := ioutil.TempDir(filepath.Join(Gopath, "src"), "test")
+	tempDir, err := ioutil.TempDir(filepath.Join(Gopath, "src", "scaffold"), "test")
 
+	assert.Nil(t, err)
 	if !filepath.IsAbs(tempDir) {
 		tempDir, err = filepath.Abs(tempDir)
 		assert.NoError(t, err)
