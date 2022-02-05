@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/catchplay/scaffold/scaffold"
+	// "github.com/catchplay/scaffold/scaffold"
 	"github.com/urfave/cli"
 )
 
@@ -18,18 +18,24 @@ func main() {
 		{
 			Name:    "init",
 			Aliases: []string{"i"},
-			Usage:   " Generate scaffold project layout",
+			Description: "Generate scaffold project layout",
+			Usage:   "ex. scaffold init destination path",
 			Action: func(c *cli.Context) error {
-				currDir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+				// currDir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+				if len(os.Args) == 2 {
+					os.Args = append(os.Args, "")
+				}
+				currDir, err := getDirectory(os.Args[2])
 				if err != nil {
 					return err
 				}
-
-				err = scaffold.New(false).Generate(currDir)
-				//fmt.Printf("error:%+v\n", err)
-				if err == nil {
-					fmt.Println("Success Created. Please excute `make up` to start service.")
-				}
+				fmt.Println(currDir)
+				fmt.Println(os.Args)
+				// err = scaffold.New(false).Generate(currDir)
+				// //fmt.Printf("error:%+v\n", err)
+				// if err == nil {
+				// 	fmt.Println("Success Created. Please excute `make up` to start service.")
+				// }
 
 				return err
 			},
@@ -40,4 +46,20 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+// if directory not specified get current directory
+func getDirectory(arg string) (string, error) {
+	if arg != ""{
+		currentDir, err := filepath.Abs(filepath.Dir(arg)) 
+		if err != nil {
+			return "", err
+		}
+		return currentDir, nil
+	}
+	
+	currentDir, err := os.Getwd()
+	if err != nil {
+		return "", err
+	}
+	return currentDir, nil  
 }

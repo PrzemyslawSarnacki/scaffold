@@ -14,18 +14,24 @@ import (
 const (
 	GoScaffoldPath = "src/scaffold"
 )
+var GoPath string
 
 func init() {
-	Gopath = os.Getenv("GOPATH")
-	if Gopath == "" {
+	GoPath = os.Getenv("GOPATH")
+	if GoPath == "" {
 		panic("cannot find $GOPATH environment variable")
 	}
 }
 
-var Gopath string
-
 type scaffold struct {
 	debug bool
+}
+
+type data struct {
+	AbsGenProjectPath string // The Abs Gen Project Path
+	ProjectPath       string //The Go import project path (eg:github.com/fooOrg/foo)
+	ProjectName       string //The project name which want to generated
+	Quit              string
 }
 
 func New(debug bool) *scaffold {
@@ -39,7 +45,7 @@ func (s *scaffold) Generate(path string) error {
 	}
 	projectName := filepath.Base(genAbsDir)
 	//TODO: have to check path MUST be under the $GOPATH/src folder
-	goProjectPath := strings.TrimPrefix(genAbsDir, filepath.Join(Gopath, "src")+string(os.PathSeparator))
+	goProjectPath := strings.TrimPrefix(genAbsDir, filepath.Join(GoPath, "src")+string(os.PathSeparator))
 
 	d := data{
 		AbsGenProjectPath: genAbsDir,
@@ -58,31 +64,8 @@ func (s *scaffold) Generate(path string) error {
 	return nil
 }
 
-type data struct {
-	AbsGenProjectPath string // The Abs Gen Project Path
-	ProjectPath       string //The Go import project path (eg:github.com/fooOrg/foo)
-	ProjectName       string //The project name which want to generated
-	Quit              string
-}
 
-type templateEngine struct {
-	Templates []templateSet
-	currDir   string
-}
 
-type templateSet struct {
-	templateFilePath string
-	templateFileName string
-	genFilePath      string
-}
-
-func getTemplateSets() []templateSet {
-	tt := templateEngine{}
-	templatesFolder := filepath.Join(Gopath, GoScaffoldPath, "templates/c9/")
-	//fmt.Printf("walk:%s\n", templatesFolder)
-	filepath.Walk(templatesFolder, tt.visit)
-	return tt.Templates
-}
 
 func (s *scaffold) genFromTemplate(templateSets []templateSet, d data) error {
 	for _, tmpl := range templateSets {
@@ -125,50 +108,6 @@ func (s *scaffold) tmplExec(tmplSet templateSet, d data) error {
 	return tmpl.Execute(dist, d)
 }
 
-func (templEngine *templateEngine) visit(path string, f os.FileInfo, err error) error {
-	if err != nil {
-		return err
-	}
-
-	if ext := filepath.Ext(path); ext == ".tmpl" {
-		templateFileName := filepath.Base(path)
-
-		genFileBaeName := strings.TrimSuffix(templateFileName, ".tmpl") + ".go"
-		genFileBasePath, err := filepath.Rel(filepath.Join(Gopath, GoScaffoldPath, "templates", "c9"), filepath.Join(filepath.Dir(path), genFileBaeName))
-		if err != nil {
-			return pkgErr.WithStack(err)
-		}
-
-		templ := templateSet{
-			templateFilePath: path,
-			templateFileName: templateFileName,
-			genFilePath:      filepath.Join(templEngine.currDir, genFileBasePath),
-		}
-
-		templEngine.Templates = append(templEngine.Templates, templ)
-
-	} else if mode := f.Mode(); mode.IsRegular() {
-		templateFileName := filepath.Base(path)
-
-		basepath := filepath.Join(Gopath, GoScaffoldPath, "template")
-		targpath := filepath.Join(filepath.Dir(path), templateFileName)
-		genFileBasePath, err := filepath.Rel(basepath, targpath)
-		if err != nil {
-			return pkgErr.WithStack(err)
-		}
-
-		templ := templateSet{
-			templateFilePath: path,
-			templateFileName: templateFileName,
-			genFilePath:      filepath.Join(templEngine.currDir, genFileBasePath),
-		}
-
-		templEngine.Templates = append(templEngine.Templates, templ)
-	}
-
-	return nil
-}
-
 func (s *scaffold) genFormStaticFle(d data) error {
 	walkerFuc := func(path string, f os.FileInfo, err error) error {
 		if f.Mode().IsRegular() {
@@ -178,7 +117,7 @@ func (s *scaffold) genFormStaticFle(d data) error {
 			}
 			defer src.Close()
 
-			basepath := filepath.Join(Gopath, GoScaffoldPath, "static")
+			basepath := filepath.Join(GoPath, GoScaffoldPath, "static")
 			distRelFilePath, err := filepath.Rel(basepath, path)
 			if err != nil {
 				return pkgErr.WithStack(err)
@@ -206,7 +145,7 @@ func (s *scaffold) genFormStaticFle(d data) error {
 		return nil
 	}
 
-	walkPath := filepath.Join(Gopath, GoScaffoldPath, "static")
+	walkPath := filepath.Join(GoPath, GoScaffoldPath, "static")
 	return filepath.Walk(walkPath, walkerFuc)
 }
 

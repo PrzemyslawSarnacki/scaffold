@@ -12,7 +12,7 @@ import (
 
 func TestScaffold(t *testing.T) {
 
-	tempDir, err := ioutil.TempDir(filepath.Join(Gopath, "src", "scaffold"), "test")
+	tempDir, err := ioutil.TempDir(filepath.Join(GoPath, "src", "scaffold"), "test")
 
 	assert.Nil(t, err)
 	if !filepath.IsAbs(tempDir) {
@@ -25,3 +25,9 @@ func TestScaffold(t *testing.T) {
 
 	defer os.RemoveAll(tempDir) // clean up
 }
+ func TestCurrentDirectory(t *testing.T) {
+	 currentDir, err := os.Getwd()
+	// currDir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	assert.Nil(t, err)
+	assert.Equal(t, "", currentDir)
+ }
