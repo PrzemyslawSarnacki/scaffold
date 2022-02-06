@@ -1,17 +1,17 @@
 
 syntax = "proto3";
 
-package moduletest1933043295;
+package proj;
 
-option go_package = "gitlab.com/clowd9/dev/sirius/module/test1933043295/pb;moduletest1933043295";
+option go_package = "gitlab.com/clowd9/dev/sirius/module/proj/pb;proj";
 
-service test1933043295ModuleService {
-  rpc test1933043295Endpoint(test1933043295EndpointRequest) returns (test1933043295EndpointResponse){};
+service ProjModuleService {
+  rpc ProjEndpoint(ProjEndpointRequest) returns (ProjEndpointResponse){};
 }
 
-message test1933043295EndpointRequest {
+message ProjEndpointRequest {
   string req = 1;
 }
-message test1933043295EndpointResponse {
+message ProjEndpointResponse {
   string rsp = 1;
 }

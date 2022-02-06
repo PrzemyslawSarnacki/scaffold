@@ -22,10 +22,7 @@ func main() {
 			Usage:   "ex. scaffold init destination path",
 			Action: func(c *cli.Context) error {
 				// currDir, err := filepath.Abs(filepath.Dir(os.Args[0]))
-				if len(os.Args) == 2 {
-					os.Args = append(os.Args, "")
-				}
-				currDir, err := getDirectory(os.Args[2])
+				currDir, err := getDirectory(os.Args)
 				if err != nil {
 					return err
 				}
@@ -48,9 +45,13 @@ func main() {
 	}
 }
 // if directory not specified get current directory
-func getDirectory(arg string) (string, error) {
-	if arg != ""{
-		currentDir, err := filepath.Abs(filepath.Dir(arg)) 
+func getDirectory(args []string) (string, error) {
+	if len(args) == 2 {
+		args = append(args, "")
+	}
+	
+	if args[2] != ""{
+		currentDir, err := filepath.Abs(filepath.Dir(args[2])) 
 		if err != nil {
 			return "", err
 		}

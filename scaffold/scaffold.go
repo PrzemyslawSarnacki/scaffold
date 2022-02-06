@@ -14,6 +14,7 @@ import (
 const (
 	GoScaffoldPath = "src/scaffold"
 )
+
 var GoPath string
 
 func init() {
@@ -31,6 +32,7 @@ type data struct {
 	AbsGenProjectPath string // The Abs Gen Project Path
 	ProjectPath       string //The Go import project path (eg:github.com/fooOrg/foo)
 	ProjectName       string //The project name which want to generated
+	ProjectNameTitle  string //Capitalized first letter
 	Quit              string
 }
 
@@ -38,12 +40,12 @@ func New(debug bool) *scaffold {
 	return &scaffold{debug: debug}
 }
 
-func (s *scaffold) Generate(path string) error {
+func (s *scaffold) Generate(path, projectName string) error {
 	genAbsDir, err := filepath.Abs(path)
 	if err != nil {
 		return err
 	}
-	projectName := filepath.Base(genAbsDir)
+	// projectName := filepath.Base(genAbsDir)
 	//TODO: have to check path MUST be under the $GOPATH/src folder
 	goProjectPath := strings.TrimPrefix(genAbsDir, filepath.Join(GoPath, "src")+string(os.PathSeparator))
 
@@ -51,6 +53,7 @@ func (s *scaffold) Generate(path string) error {
 		AbsGenProjectPath: genAbsDir,
 		ProjectPath:       goProjectPath,
 		ProjectName:       projectName,
+		ProjectNameTitle:  strings.Title(projectName),
 		Quit:              "<-quit",
 	}
 
@@ -63,9 +66,6 @@ func (s *scaffold) Generate(path string) error {
 	}
 	return nil
 }
-
-
-
 
 func (s *scaffold) genFromTemplate(templateSets []templateSet, d data) error {
 	for _, tmpl := range templateSets {

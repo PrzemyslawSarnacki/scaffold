@@ -8,12 +8,12 @@ import (
 )
 
 // Transaction..
-type {{.ProjectName}} struct {
+type {{.ProjectNameTitle}} struct {
 	// Database integration
 	Db *gorm.DB
 }
 
-func (s *{{.ProjectName}}) Get{{.ProjectName}}(id *uuid.UUID) (*base.{{.ProjectName}}, error) {
+func (s *{{.ProjectNameTitle}}) Get{{.ProjectNameTitle}}(id *uuid.UUID) (*base.{{.ProjectNameTitle}}, error) {
 	err := s.Db.First(&{{.ProjectName}}).Error
 	if err != nil {
 		return nil, err
