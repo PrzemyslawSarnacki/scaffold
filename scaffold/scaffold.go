@@ -1,7 +1,6 @@
 package scaffold
 
 import (
-	"fmt"
 	"html/template"
 	"io"
 	"os"
@@ -9,6 +8,7 @@ import (
 	"strings"
 
 	pkgErr "github.com/pkg/errors"
+	log "github.com/sirupsen/logrus"
 )
 
 const (
@@ -108,7 +108,7 @@ func (s *scaffold) tmplExec(tmplSet templateSet, d data) error {
 	}
 	defer dist.Close()
 
-	fmt.Printf("Create %s\n", distRelFilePath)
+	log.Printf("Create %s\n", distRelFilePath)
 	return tmpl.Execute(dist, d)
 }
 
@@ -143,7 +143,7 @@ func (s *scaffold) genFormStaticFle(d data) error {
 				return pkgErr.WithStack(err)
 			}
 
-			fmt.Printf("Create %s \n", distRelFilePath)
+			log.Printf("Create %s \n", distRelFilePath)
 		}
 
 		return nil
@@ -155,6 +155,6 @@ func (s *scaffold) genFormStaticFle(d data) error {
 
 func (s *scaffold) debugPrintf(format string, a ...interface{}) {
 	if s.debug {
-		fmt.Printf(format, a...)
+		log.Printf(format, a...)
 	}
 }

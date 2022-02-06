@@ -1,12 +1,11 @@
 package main
 
 import (
-	"fmt"
-	"log"
 	"os"
 	"path/filepath"
 
 	"github.com/PrzemyslawSarnacki/scaffold/scaffold"
+	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
 )
 
@@ -14,6 +13,7 @@ func main() {
 	var serviceType string 
 	var projectName string 
 	var templateName string 
+
 	app := cli.NewApp()
 	app.Version = "1.0.0-rc"
 	app.Usage = "Generate scaffold project layout for Go."
@@ -49,17 +49,17 @@ func main() {
 				if err != nil {
 					return err
 				}
-				fmt.Println(projectName, serviceType, templateName)
+				log.Println(projectName, serviceType, templateName)
 				currDir = filepath.Join(currDir, projectName)
 				err = os.Mkdir(currDir, 0755)
-				fmt.Println(err)
+				log.Println(err)
 
-				fmt.Println(currDir)
-				fmt.Println(os.Args)
+				log.Println(currDir)
+				log.Println(os.Args)
 				err = scaffold.New(false).Generate(currDir, projectName, templateName, serviceType)
-				fmt.Printf("error:%+v\n", err)
+				log.Printf("error:%+v\n", err)
 				if err == nil {
-					fmt.Println("Success Created. Please excute `make up` to start service.")
+					log.Println("Success Created. Please excute `make up` to start service.")
 				}
 
 				return err
