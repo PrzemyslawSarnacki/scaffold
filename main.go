@@ -64,7 +64,7 @@ func main() {
 				currDir = filepath.Join(currDir, projectName)
 				err = os.Mkdir(currDir, os.ModePerm)
 				if err != nil {
-					log.Error("error while creating dir: %v",err)
+					log.Errorf("error while creating dir: %v",err)
 					return err
 				}
 				err = scaffold.New(false).Generate(currDir, projectName, templateName, serviceType)
