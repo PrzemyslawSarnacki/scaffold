@@ -10,9 +10,11 @@ type templateSet struct {
 	genFilePath      string
 }
 
-func getTemplateSets() []templateSet {
-	tt := templateEngine{}
-	templatesFolder := filepath.Join(GoPath, GoScaffoldPath, "templates/c9/")
+func getTemplateSets(templateName string) []templateSet {
+	tt := templateEngine{
+		basePath:  filepath.Join(GoPath, GoScaffoldPath, "templates", templateName),
+	}
+	templatesFolder := filepath.Join(GoPath, GoScaffoldPath, "templates", templateName)
 	//fmt.Printf("walk:%s\n", templatesFolder)
 	filepath.Walk(templatesFolder, tt.visit)
 	return tt.Templates

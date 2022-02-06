@@ -31,6 +31,8 @@ type scaffold struct {
 type data struct {
 	AbsGenProjectPath string // The Abs Gen Project Path
 	ProjectPath       string //The Go import project path (eg:github.com/fooOrg/foo)
+	ServiceType       string //The project name which want to generated
+	ServiceTypeTitle  string //The project name which want to generated
 	ProjectName       string //The project name which want to generated
 	ProjectNameTitle  string //Capitalized first letter
 	Quit              string
@@ -40,7 +42,7 @@ func New(debug bool) *scaffold {
 	return &scaffold{debug: debug}
 }
 
-func (s *scaffold) Generate(path, projectName string) error {
+func (s *scaffold) Generate(path, projectName, templateName, serviceType string) error {
 	genAbsDir, err := filepath.Abs(path)
 	if err != nil {
 		return err
@@ -54,10 +56,12 @@ func (s *scaffold) Generate(path, projectName string) error {
 		ProjectPath:       goProjectPath,
 		ProjectName:       projectName,
 		ProjectNameTitle:  strings.Title(projectName),
+		ServiceType:       serviceType,
+		ServiceTypeTitle:  strings.Title(serviceType),
 		Quit:              "<-quit",
 	}
 
-	if err := s.genFromTemplate(getTemplateSets(), d); err != nil {
+	if err := s.genFromTemplate(getTemplateSets(templateName), d); err != nil {
 		return err
 	}
 

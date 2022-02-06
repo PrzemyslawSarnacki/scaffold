@@ -11,6 +11,7 @@ import (
 type templateEngine struct {
 	Templates []templateSet
 	currDir   string
+	basePath   string
 }
 
 func (templEngine *templateEngine) visit(path string, f os.FileInfo, err error) error {
@@ -22,7 +23,7 @@ func (templEngine *templateEngine) visit(path string, f os.FileInfo, err error) 
 		templateFileName := filepath.Base(path)
 
 		genFileBaeName := strings.TrimSuffix(templateFileName, ".tmpl") + ".go"
-		genFileBasePath, err := filepath.Rel(filepath.Join(GoPath, GoScaffoldPath, "templates", "c9"), filepath.Join(filepath.Dir(path), genFileBaeName))
+		genFileBasePath, err := filepath.Rel(templEngine.basePath, filepath.Join(filepath.Dir(path), genFileBaeName))
 		if err != nil {
 			return pkgErr.WithStack(err)
 		}
@@ -38,7 +39,7 @@ func (templEngine *templateEngine) visit(path string, f os.FileInfo, err error) 
 	} else if mode := f.Mode(); mode.IsRegular() {
 		templateFileName := filepath.Base(path)
 
-		basepath := filepath.Join(GoPath, GoScaffoldPath, "templates", "c9")
+		basepath := templEngine.basePath
 		targpath := filepath.Join(filepath.Dir(path), templateFileName)
 		genFileBasePath, err := filepath.Rel(basepath, targpath)
 		if err != nil {

@@ -2,17 +2,17 @@ package svc
 
 import (
 	"github.com/urfave/cli/v2"
-	"gitlab.com/clowd9/dev/sirius/core/{{.ProjectName}}/handler"
-	"gitlab.com/clowd9/dev/sirius/core/{{.ProjectName}}/hmodule"
-	"gitlab.com/clowd9/dev/sirius/core/{{.ProjectName}}/hmodule/config"
-	pb "gitlab.com/clowd9/dev/sirius/core/{{.ProjectName}}/pb"
+	"gitlab.com/clowd9/dev/sirius/{{.ServiceType}}/{{.ProjectName}}/handler"
+	"gitlab.com/clowd9/dev/sirius/{{.ServiceType}}/{{.ProjectName}}/hmodule"
+	"gitlab.com/clowd9/dev/sirius/{{.ServiceType}}/{{.ProjectName}}/hmodule/config"
+	pb "gitlab.com/clowd9/dev/sirius/{{.ServiceType}}/{{.ProjectName}}/pb"
 	"gitlab.com/clowd9/platform/micro/client"
 	"gitlab.com/clowd9/platform/micro/service"
 	"gitlab.com/clowd9/platform/micro/service/dependency"
 	healthpb "google.golang.org/grpc/health/grpc_health_v1"
 )
 
-const ServiceName = "module-{{.ProjectName}}"
+const ServiceName = "{{.ServiceType}}-{{.ProjectName}}"
 
 type ServiceInitType func(provider dependency.DependencyProvider) func(app *service.Service) error
 
@@ -29,25 +29,25 @@ func NewServiceProvider(provider dependency.DependencyProvider) *ServiceProvider
 func (sp *ServiceProvider) InitService() func(app *service.Service) error {
 	return func(app *service.Service) error {
 
-		h := &handler.{{.ProjectNameTitle}}ModuleService{
+		h := &handler.{{.ProjectNameTitle}}{{.ServiceTypeTitle}}Service{
 		}
 
 		app.AddHandler(h)
 		// Register the healtcheck server
 		healthpb.RegisterHealthServer(app.Server(), h)
 		// Register the validator server
-		pb.Register{{.ProjectNameTitle}}CoreServiceServer(app.Server(), h)
+		pb.Register{{.ProjectNameTitle}}{{.ServiceTypeTitle}}ServiceServer(app.Server(), h)
 
 		return nil
 	}
 }
 
 func (sp *ServiceProvider) GetServiceClient(cl *client.Client) interface{} {
-	return pb.New{{.ProjectNameTitle}}CoreServiceClient(cl.Dial())
+	return pb.New{{.ProjectNameTitle}}{{.ServiceTypeTitle}}ServiceClient(cl.Dial())
 }
 
 func (sp *ServiceProvider) GetServiceProtoName() string {
-	return "module{{.ProjectNameTitle}}.{{.ProjectNameTitle}}ModuleService"
+	return "{{.ServiceType}}{{.ProjectName}}.{{.ProjectNameTitle}}{{.ServiceTypeTitle}}Service"
 }
 
 func (sp *ServiceProvider) GetServiceName() string {

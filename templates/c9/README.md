@@ -1,6 +1,6 @@
 # {{.ProjectNameTitle}} Service
 
-This is the {{.ProjectNameTitle}} module service.
+This is the {{.ProjectNameTitle}} {{.ServiceTypeTitle}} service.
 
 This service is responsible for ...
 
