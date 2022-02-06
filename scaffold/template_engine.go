@@ -38,7 +38,7 @@ func (templEngine *templateEngine) visit(path string, f os.FileInfo, err error) 
 	} else if mode := f.Mode(); mode.IsRegular() {
 		templateFileName := filepath.Base(path)
 
-		basepath := filepath.Join(GoPath, GoScaffoldPath, "template")
+		basepath := filepath.Join(GoPath, GoScaffoldPath, "templates", "c9")
 		targpath := filepath.Join(filepath.Dir(path), templateFileName)
 		genFileBasePath, err := filepath.Rel(basepath, targpath)
 		if err != nil {

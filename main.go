@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	// "github.com/catchplay/scaffold/scaffold"
+	"github.com/PrzemyslawSarnacki/scaffold/scaffold"
 	"github.com/urfave/cli"
 )
 
@@ -22,17 +22,22 @@ func main() {
 			Usage:   "ex. scaffold init destination path",
 			Action: func(c *cli.Context) error {
 				// currDir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+				dirName := "proj"
 				currDir, err := getDirectory(os.Args)
 				if err != nil {
 					return err
 				}
+				currDir = filepath.Join(currDir, dirName)
+				err = os.Mkdir(currDir, 0755)
+				fmt.Println(err)
+
 				fmt.Println(currDir)
 				fmt.Println(os.Args)
-				// err = scaffold.New(false).Generate(currDir)
-				// //fmt.Printf("error:%+v\n", err)
-				// if err == nil {
-				// 	fmt.Println("Success Created. Please excute `make up` to start service.")
-				// }
+				err = scaffold.New(false).Generate(currDir, dirName)
+				fmt.Printf("error:%+v\n", err)
+				if err == nil {
+					fmt.Println("Success Created. Please excute `make up` to start service.")
+				}
 
 				return err
 			},

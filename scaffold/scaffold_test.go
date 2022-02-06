@@ -22,7 +22,7 @@ func TestScaffold(t *testing.T) {
 
 	fmt.Printf("tempDir:%s\n", tempDir)
 	assert.NoError(t, New(true).Generate(tempDir, "proj"))
-
+	
 	// defer os.RemoveAll(tempDir) // clean up
 }
  func TestCurrentDirectory(t *testing.T) {

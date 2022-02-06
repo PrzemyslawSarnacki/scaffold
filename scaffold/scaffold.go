@@ -61,9 +61,9 @@ func (s *scaffold) Generate(path, projectName string) error {
 		return err
 	}
 
-	if err := s.genFormStaticFle(d); err != nil {
-		return err
-	}
+	// if err := s.genFormStaticFle(d); err != nil {
+	// 	return err
+	// }
 	return nil
 }
 
@@ -117,7 +117,7 @@ func (s *scaffold) genFormStaticFle(d data) error {
 			}
 			defer src.Close()
 
-			basepath := filepath.Join(GoPath, GoScaffoldPath, "static")
+			basepath := filepath.Join(GoPath, GoScaffoldPath, "templates", "c9")
 			distRelFilePath, err := filepath.Rel(basepath, path)
 			if err != nil {
 				return pkgErr.WithStack(err)
@@ -145,7 +145,7 @@ func (s *scaffold) genFormStaticFle(d data) error {
 		return nil
 	}
 
-	walkPath := filepath.Join(GoPath, GoScaffoldPath, "static")
+	walkPath := filepath.Join(GoPath, GoScaffoldPath, "templates", "c9")
 	return filepath.Walk(walkPath, walkerFuc)
 }
 
