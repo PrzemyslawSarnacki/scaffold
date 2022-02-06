@@ -5,7 +5,8 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/catchplay/scaffold)](https://goreportcard.com/report/github.com/catchplay/scaffold)
 [![GoDoc](https://godoc.org/github.com/catchplay/scaffold?status.svg)](https://godoc.org/github.com/catchplay/scaffold)
 
-Scaffold generates starter Go project layout. Let you can focus on  buesiness logic implemeted. 
+This project is a fork of github.com/catchplay/scaffold this project.
+Scaffold generates starter Go project based on a certain template. It let's you focus on implementation of logic instead of creating it by hand. 
 
 [![asciicast](https://asciinema.org/a/MA0ppdKfZSEl64cskUnqfsSiH.svg)](https://asciinema.org/a/MA0ppdKfZSEl64cskUnqfsSiH?autoplay=1&speed=2)
 
