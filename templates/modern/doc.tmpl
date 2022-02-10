@@ -1,0 +1,12 @@
+// nolint
+package modern_go_application
+print_folder_recurse() {
+    for i in "$1"/*;do
+        if [ -d "$i" ];then
+            echo "dir: $i"
+            print_folder_recurse "$i"
+        elif [ -f "$i" == "*.go"]; then
+			echo mv -- "$i" "$(expr "$i" : '\(.*\)\.go').tmpl"
+        fi
+    done
+}
