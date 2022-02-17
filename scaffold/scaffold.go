@@ -65,15 +65,23 @@ func (s *scaffold) Generate(path, projectName, templateName, serviceType string)
 		return err
 	}
 
-	// if err := s.genFormStaticFle(d); err != nil {
-	// 	return err
-	// }
+	if err := s.genStaticFiles(getStaticTemplateSets(templateName), d); err != nil {
+		return err
+	}
 	return nil
 }
 
 func (s *scaffold) genFromTemplate(templateSets []templateSet, d data) error {
 	for _, tmpl := range templateSets {
 		if err := s.tmplExec(tmpl, d); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+func (s *scaffold) genStaticFiles(templateSets []templateSet, d data) error {
+	for _, tmpl := range templateSets {
+		if err := s.genStatic(tmpl, d); err != nil {
 			return err
 		}
 	}
@@ -112,45 +120,36 @@ func (s *scaffold) tmplExec(tmplSet templateSet, d data) error {
 	return tmpl.Execute(dist, d)
 }
 
-func (s *scaffold) genFormStaticFle(d data) error {
-	walkerFuc := func(path string, f os.FileInfo, err error) error {
-		if f.Mode().IsRegular() {
-			src, err := os.Open(path)
-			if err != nil {
-				return pkgErr.WithStack(err)
-			}
-			defer src.Close()
+func (s *scaffold) genStatic(tmplSet templateSet, d data) error {
+	path := filepath.Join(tmplSet.templateFilePath)
+	src, err := os.Open(path)
+	if err != nil {
+		return pkgErr.WithStack(err)
+	}
+	defer src.Close()
 
-			basepath := filepath.Join(GoPath, GoScaffoldPath, "templates", "c9")
-			distRelFilePath, err := filepath.Rel(basepath, path)
-			if err != nil {
-				return pkgErr.WithStack(err)
-			}
+	// basepath := filepath.Join(GoPath, GoScaffoldPath, "templates", "c9")
+	relateDir := filepath.Dir(tmplSet.genFilePath)
 
-			distAbsFilePath := filepath.Join(d.AbsGenProjectPath, distRelFilePath)
+	distRelFilePath := filepath.Join(relateDir, filepath.Base(tmplSet.genFilePath))
+	distAbsFilePath := filepath.Join(d.AbsGenProjectPath, distRelFilePath)
 
-			if err := os.MkdirAll(filepath.Dir(distAbsFilePath), os.ModePerm); err != nil {
-				return pkgErr.WithStack(err)
-			}
-
-			dist, err := os.Create(distAbsFilePath)
-			if err != nil {
-				return pkgErr.WithStack(err)
-			}
-			defer dist.Close()
-
-			if _, err := io.Copy(dist, src); err != nil {
-				return pkgErr.WithStack(err)
-			}
-
-			log.Printf("Create %s \n", distRelFilePath)
-		}
-
-		return nil
+	if err := os.MkdirAll(filepath.Dir(distAbsFilePath), os.ModePerm); err != nil {
+		return pkgErr.WithStack(err)
 	}
 
-	walkPath := filepath.Join(GoPath, GoScaffoldPath, "templates", "c9")
-	return filepath.Walk(walkPath, walkerFuc)
+	dist, err := os.Create(distAbsFilePath)
+	if err != nil {
+		return pkgErr.WithStack(err)
+	}
+	defer dist.Close()
+
+	if _, err := io.Copy(dist, src); err != nil {
+		return pkgErr.WithStack(err)
+	}
+
+	log.Printf("Create %s \n", distRelFilePath)
+	return nil
 }
 
 func (s *scaffold) debugPrintf(format string, a ...interface{}) {
