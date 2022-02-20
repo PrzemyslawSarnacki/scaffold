@@ -11,19 +11,40 @@ import (
 )
 
 func TestScaffold(t *testing.T) {
-
-	tempDir, err := ioutil.TempDir(filepath.Join(GoPath, "src", "scaffold"), "test")
-
-	assert.Nil(t, err)
-	if !filepath.IsAbs(tempDir) {
-		tempDir, err = filepath.Abs(tempDir)
-		assert.NoError(t, err)
+	testCases := []struct {
+		template	string
+		
+	}{
+		{
+			template: "c9",
+		},
+		{
+			template: "fiber",
+		},
+		{
+			template: "modern",
+		},
+		{
+			template: "template",
+		},
 	}
-
-	fmt.Printf("tempDir:%s\n", tempDir)
-	assert.NoError(t, New(true).Generate(tempDir, "project", "fiber", "module"))
-	
-	defer os.RemoveAll(tempDir) // clean up
+	for _, tC := range testCases {
+		t.Run(fmt.Sprintf("generate code for template named: %s", tC.template), func(t *testing.T) {
+			
+			tempDir, err := ioutil.TempDir(filepath.Join(GoPath, "src", "scaffold"), "test")
+		
+			assert.Nil(t, err)
+			if !filepath.IsAbs(tempDir) {
+				tempDir, err = filepath.Abs(tempDir)
+				assert.NoError(t, err)
+			}
+		
+			fmt.Printf("tempDir:%s\n", tempDir)
+			assert.NoError(t, New(true).Generate(tempDir, "project", tC.template, "module"))
+			
+			defer os.RemoveAll(tempDir) // clean up
+		})
+	}
 }
  func TestCurrentDirectory(t *testing.T) {
 	 currentDir, err := os.Getwd()
