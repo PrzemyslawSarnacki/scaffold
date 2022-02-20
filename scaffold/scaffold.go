@@ -1,6 +1,7 @@
 package scaffold
 
 import (
+	"encoding/json"
 	"html/template"
 	"io"
 	"os"
@@ -35,6 +36,7 @@ type data struct {
 	ServiceTypeTitle  string //The project name which want to generated
 	ProjectName       string //The project name which want to generated
 	ProjectNameTitle  string //Capitalized first letter
+	Json map[string]interface{} // map of the data
 	Quit              string
 }
 
@@ -69,6 +71,13 @@ func (s *scaffold) Generate(path, projectName, templateName, serviceType string)
 		return err
 	}
 	return nil
+}
+
+func (s *scaffold) unmarshalJson(jsonString string) (map[string]interface{}, error) {
+	var result map[string]interface{}
+	// Unmarshal or Decode the JSON to the interface.
+	err := json.Unmarshal([]byte(jsonString), &result)
+	return result, err
 }
 
 func (s *scaffold) genFromTemplate(templateSets []templateSet, d data) error {
