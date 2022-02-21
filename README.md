@@ -22,6 +22,7 @@ fiber  | Fiber web framework starter boilerplate from `github.com/gofiber/boiler
 The following is `template` Go project layout scaffold generated:
 
 ```
+projectname/
 ├── Dockerfile
 ├── Makefile
 ├── README.md
